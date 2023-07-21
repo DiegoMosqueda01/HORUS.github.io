@@ -1,33 +1,78 @@
-import React, {useState} from "react";
+import axios from "../services/Axios";
 
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+const variables = {
+  _id: "",
+  nombre: "",
+  precio: "",
+  cantidad: "",
+  descripcion: "",
+  image: "",
+};
+
+const obtenerProducto = async (id) => {
+  return axios.get("/producto/oneProducto/" + id);
+};
+
+const loadFileFromPath = async (path) => {
+  const fileResponse = await fetch(path);
+  const blob = await fileResponse.blob();
+
+  const file = new File([blob], "image.jpg", { type: "image/jpeg" });
+
+  const dT = new DataTransfer();
+  dT.items.add(file);
+
+  return dT;
+};
+
+const urlImages = "http://localhost:4001/images/";
 
 function Editar() {
+  const { id } = useParams();
 
-    const variables={
-        _id:"",
-        nombre:"",
-        precio:"",
-        cantidad:"",
-        descripcion:"",
-        image:""
-    }
+  const navigate = useNavigate();
 
-    const [saveDatos, setSaveDatos]=useState(variables);
+  const [saveDatos, setSaveDatos] = useState(variables);
 
-    const onChange=()=>{
-        alert("Cambio")
-    }
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setSaveDatos({ ...saveDatos, [name]: value });
+  };
 
-    
+  const onChangeImage = (e) => {
+    const { name, files } = e.target;
+    setSaveDatos({ ...saveDatos, [name]: files[0] });
+  };
 
-    const EditarForm=()=>{
-        alert("Edicion de formulario")
-    }
+  const EditarForm = async (e) => {
+    e.preventDefault();
+    const formu = document.getElementById("form-producto");
+    const formData = new FormData(formu);
+    await axios.patch("producto/updateProducto/" + id, formData).then(() => {
+      navigate("/admin/home");
+    });
+  };
 
+  useEffect(() => {
+    obtenerProducto(id).then(async (response) => {
+      const filename = response.data.filename;
+      const imageField = document.querySelector("#image");
+      imageField.files = (
+        await loadFileFromPath(`${urlImages}/${filename}`)
+      ).files;
+
+      setSaveDatos({
+        ...response.data,
+      });
+    });
+  }, []);
 
   return (
     <div>
-      <form class="row g-3" onSubmit={EditarForm}>
+      <form class="row g-3" onSubmit={EditarForm} id="form-producto">
         <div class="col-md-12">
           <label for="validationDefault01" class="form-label">
             Nombre del producto
@@ -90,13 +135,13 @@ function Editar() {
         </div>
         <div class="col-md-12">
           <input
-            type="text"
+            type="file"
+            accept="image/*"
             class="form-control"
-            id="validationDefault02"
+            id="image"
             placeholder="Ingresa la imagen"
             name="image"
-            value={saveDatos.image}
-            onChange={onChange}
+            onChange={onChangeImage}
             required
           />
         </div>
