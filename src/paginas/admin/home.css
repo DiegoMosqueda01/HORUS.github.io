@@ -1,0 +1,8 @@
+.fondo{
+    width: 30;
+    src: "/image";
+    height: 30;
+    background-image: url("23069.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
