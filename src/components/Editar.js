@@ -28,7 +28,7 @@ const loadFileFromPath = async (path) => {
   return dT;
 };
 
-const urlImages = "http://localhost:4001/images/";
+const urlImages = "https://diegoapi.ddns.net/images/";
 
 function Editar() {
   const { id } = useParams();

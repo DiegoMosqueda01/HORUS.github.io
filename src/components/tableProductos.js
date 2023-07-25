@@ -13,7 +13,7 @@ function TableProductos() {
     image: "",
   };
 
-  const urlImages = "http://localhost:4001/images/";
+  const urlImages = "https://diegoapi.ddns.net/images/";
 
   const [saveDatos, setSaveDatos] = useState(datos);
   const [almacenarDatos, setAlmacenarDatos] = useState([]);
@@ -51,15 +51,12 @@ function TableProductos() {
     consultarInformacion();
   };
 
-
   useEffect(() => {
     consultarInformacion();
   }, []);
 
-
   const abrirModal = () => {
-
-    setShow({...!show});
+    setShow({ ...!show });
   };
 
   const listaProducto = almacenarDatos.map((producto, index) => {

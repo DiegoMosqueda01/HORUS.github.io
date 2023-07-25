@@ -1,5 +1,5 @@
 import Axios from "axios";
 
 export default Axios.create({
-    baseURL:"http://127.0.0.1:4001/api/"
+  baseURL: "https://diegoapi.ddns.net/api/",
 });
